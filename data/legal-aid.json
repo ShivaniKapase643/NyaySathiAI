@@ -1,0 +1,103 @@
+{
+  "_note": "TODO: Verify all entries — last_verified dates are estimates. Cross-check all phone numbers and URLs before going live.",
+  "helplines": [
+    {
+      "id": "nalsa-main",
+      "name": "NALSA — National Legal Services Authority",
+      "shortName": "NALSA Helpline",
+      "phone": "15100",
+      "description": "National toll-free legal aid helpline. Free legal advice and referral to State/District Legal Services Authorities. Available in multiple languages.",
+      "url": "https://nalsa.gov.in/",
+      "last_verified": "2024-01-01",
+      "verified": false,
+      "notes": "TODO: Verify current availability and hours"
+    },
+    {
+      "id": "nlsa-telelaw",
+      "name": "Tele-Law Service (Common Service Centres)",
+      "shortName": "Tele-Law",
+      "phone": null,
+      "description": "Legal advice via video conferencing through Common Service Centres (CSCs). Available in rural and semi-urban areas. Connect through your nearest CSC.",
+      "url": "https://tele-law.in/",
+      "last_verified": "2024-01-01",
+      "verified": false,
+      "notes": "TODO: Verify current URL and availability"
+    },
+    {
+      "id": "nyaya-bandhu",
+      "name": "Nyaya Bandhu — Pro Bono Legal Services",
+      "shortName": "Nyaya Bandhu",
+      "phone": null,
+      "description": "Mobile app and portal connecting eligible beneficiaries with pro bono advocates. Available for economically weaker sections.",
+      "url": "https://doj.gov.in/nyaya-bandhu/",
+      "last_verified": "2024-01-01",
+      "verified": false,
+      "notes": "TODO: Verify current URL"
+    }
+  ],
+  "stateAuthorities": [
+    {
+      "id": "delhi-slsa",
+      "state": "Delhi",
+      "name": "Delhi State Legal Services Authority",
+      "shortName": "DSLSA",
+      "url": "https://dslsa.org/",
+      "last_verified": "2024-01-01",
+      "verified": false
+    },
+    {
+      "id": "maha-slsa",
+      "state": "Maharashtra",
+      "name": "Maharashtra State Legal Services Authority",
+      "shortName": "MAHSLSA",
+      "url": "https://mahslsa.org/",
+      "last_verified": "2024-01-01",
+      "verified": false
+    },
+    {
+      "id": "up-slsa",
+      "state": "Uttar Pradesh",
+      "name": "U.P. State Legal Services Authority",
+      "shortName": "UPSLSA",
+      "url": "http://upslsa.com/",
+      "last_verified": "2024-01-01",
+      "verified": false
+    },
+    {
+      "id": "karnataka-slsa",
+      "state": "Karnataka",
+      "name": "Karnataka State Legal Services Authority",
+      "shortName": "KSLSA",
+      "url": "https://kslsa.kar.nic.in/",
+      "last_verified": "2024-01-01",
+      "verified": false
+    },
+    {
+      "id": "tn-slsa",
+      "state": "Tamil Nadu",
+      "name": "Tamil Nadu State Legal Services Authority",
+      "shortName": "TNSLSA",
+      "url": "https://tnslsa.in/",
+      "last_verified": "2024-01-01",
+      "verified": false
+    }
+  ],
+  "consumerForums": {
+    "onlinePortal": {
+      "name": "eDaakhil — Online Consumer Complaint Portal",
+      "url": "https://edaakhil.nic.in/",
+      "description": "File consumer complaints online with the District/State/National Consumer Commission. No lawyer required.",
+      "last_verified": "2024-01-01",
+      "verified": false
+    },
+    "nationalHelpline": {
+      "name": "National Consumer Helpline",
+      "phone": "1800-11-4000",
+      "phone_alt": "14404",
+      "url": "https://consumerhelpline.gov.in/",
+      "last_verified": "2024-01-01",
+      "verified": false,
+      "notes": "TODO: Verify current phone numbers"
+    }
+  }
+}

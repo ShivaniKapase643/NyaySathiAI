@@ -1,0 +1,145 @@
+[
+  {
+    "id": "rti-001",
+    "act": "Right to Information Act, 2005",
+    "section": "Section 6",
+    "title": "How to File an RTI Application",
+    "text": "Any citizen of India may request information from a public authority by submitting a written application to the Central Public Information Officer (CPIO) or State Public Information Officer (SPIO). The application may be written in English, Hindi, or the official language of the area. No reasons need to be given for the information sought.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
+    "language": "en",
+    "verified": false,
+    "keywords": ["RTI", "application", "how to file", "CPIO", "SPIO", "information request"]
+  },
+  {
+    "id": "rti-002",
+    "act": "Right to Information Act, 2005",
+    "section": "Section 7(1)",
+    "title": "RTI Reply Timeline — 30 Days",
+    "text": "The Public Information Officer must provide the requested information within 30 days of receiving the application. If the information concerns the life or liberty of a person, it must be provided within 48 hours. Failure to reply within 30 days is deemed a refusal and attracts a penalty on the PIO.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
+    "language": "en",
+    "verified": false,
+    "keywords": ["RTI", "30 days", "reply timeline", "response time", "deadline", "48 hours", "life liberty"]
+  },
+  {
+    "id": "rti-003",
+    "act": "Right to Information Act, 2005",
+    "section": "Section 6(1)",
+    "title": "RTI Application Fee",
+    "text": "A fee of Rs. 10 is required for filing an RTI application to a Central Government public authority. This can be paid by cash, demand draft, or postal order. Below poverty line (BPL) applicants are exempt from paying any fee. State governments may prescribe different fees for their public authorities.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
+    "language": "en",
+    "verified": false,
+    "keywords": ["RTI", "fee", "Rs 10", "cost", "BPL", "exemption", "payment"]
+  },
+  {
+    "id": "rti-004",
+    "act": "Right to Information Act, 2005",
+    "section": "Section 19(1)",
+    "title": "First Appeal under RTI",
+    "text": "If an applicant does not receive information within the prescribed time, or is not satisfied with the information or the decision of the PIO, they may file a first appeal to the First Appellate Authority (an officer senior to the PIO) within 30 days of the expiry of the time limit or receipt of decision. The First Appellate Authority must decide within 30 days (extendable to 45 days with written reasons).",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
+    "language": "en",
+    "verified": false,
+    "keywords": ["RTI", "first appeal", "appellate authority", "dissatisfied", "30 days", "appeal process"]
+  },
+  {
+    "id": "rti-005",
+    "act": "Right to Information Act, 2005",
+    "section": "Section 8",
+    "title": "RTI Exemptions — Information That Can Be Withheld",
+    "text": "Certain categories of information are exempt from disclosure under RTI, including: information affecting national security or sovereignty, information that would impede investigation of an offence, cabinet papers and deliberations, personal information with no public interest, information held in fiduciary capacity, trade secrets or intellectual property, and information relating to individuals' privacy. However, even exempt information may be disclosed if public interest outweighs harm.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
+    "language": "en",
+    "verified": false,
+    "keywords": ["RTI", "exemptions", "refused", "withheld", "national security", "privacy", "fiduciary"]
+  },
+  {
+    "id": "cpa-001",
+    "act": "Consumer Protection Act, 2019",
+    "section": "Section 2(7)",
+    "title": "Consumer Rights — Who Is a Consumer?",
+    "text": "A consumer is any person who buys goods or hires services for consideration (payment). This includes online purchases. A person who buys goods for commercial resale or manufacturing purposes is NOT a consumer under this Act. Family members and beneficiaries of the buyer are also considered consumers.",
+    "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
+    "language": "en",
+    "verified": false,
+    "keywords": ["consumer", "definition", "who is consumer", "buyer", "services", "goods", "online"]
+  },
+  {
+    "id": "cpa-002",
+    "act": "Consumer Protection Act, 2019",
+    "section": "Section 2(46)",
+    "title": "Consumer Rights — Six Fundamental Rights",
+    "text": "Every consumer has six fundamental rights: (1) Right to safety — protection from hazardous goods/services; (2) Right to information — about quality, quantity, price; (3) Right to choice — access to competitive prices; (4) Right to be heard — representation in consumer forums; (5) Right to redressal — relief against unfair trade practices; (6) Right to consumer education — knowledge of rights.",
+    "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
+    "language": "en",
+    "verified": false,
+    "keywords": ["consumer rights", "six rights", "right to safety", "right to information", "right to choice", "redressal"]
+  },
+  {
+    "id": "cpa-003",
+    "act": "Consumer Protection Act, 2019",
+    "section": "Section 34–35",
+    "title": "How to File a Consumer Complaint",
+    "text": "A consumer complaint can be filed before the District Consumer Disputes Redressal Commission (District Forum) for disputes up to Rs. 1 crore, State Commission for Rs. 1 crore to Rs. 10 crore, and National Commission for disputes above Rs. 10 crore. Complaints may be filed online through the EDAAKHIL portal (edaakhil.nic.in). No lawyer is required for filing.",
+    "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
+    "language": "en",
+    "verified": false,
+    "keywords": ["consumer complaint", "how to file", "District Forum", "State Commission", "National Commission", "eDaakhil", "online complaint"]
+  },
+  {
+    "id": "cpa-004",
+    "act": "Consumer Protection Act, 2019",
+    "section": "Section 69",
+    "title": "Consumer Complaint — Limitation Period",
+    "text": "A consumer complaint must be filed within two years from the date on which the cause of action (the defect or deficiency) arose. The Commission may condone delay if the complainant provides sufficient cause for the delay. Filing after 2 years without adequate reason may result in the complaint being dismissed as time-barred.",
+    "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
+    "language": "en",
+    "verified": false,
+    "keywords": ["consumer complaint", "limitation period", "2 years", "time limit", "deadline", "time-barred"]
+  },
+  {
+    "id": "cpa-005",
+    "act": "Consumer Protection Act, 2019",
+    "section": "Section 2(47)",
+    "title": "Unfair Trade Practices — What Counts?",
+    "text": "Unfair trade practices include: false or misleading advertisements, false claims about quality/grade/model, bait-and-switch tactics, offering gifts with conditions of purchase that are not revealed, and hoarding goods to raise prices. Victims of unfair trade practices can file a complaint with the consumer forum or the Central Consumer Protection Authority (CCPA).",
+    "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
+    "language": "en",
+    "verified": false,
+    "keywords": ["unfair trade practices", "false advertisement", "misleading", "consumer fraud", "CCPA"]
+  },
+  {
+    "id": "tenancy-001",
+    "act": "General Tenancy / Rental Law (India)",
+    "section": "General Principles",
+    "title": "Security Deposit — Rights and Refund",
+    "text": "In most Indian states, a security deposit (typically 1–3 months' rent, though up to 10 months in some cities) is collected at the start of a tenancy. The landlord must return the full deposit within a reasonable time (usually within 30 days) after the tenant vacates, subject to deductions for actual damage beyond normal wear and tear. Withholding the deposit without valid reason entitles the tenant to seek refund through the Rent Control Authority or Civil Court. NOTE: Tenancy laws vary significantly by state — check your specific state's Rent Control Act.",
+    "source_url": "https://nalsa.gov.in/",
+    "language": "en",
+    "verified": false,
+    "keywords": ["security deposit", "deposit refund", "tenant rights", "landlord", "rent", "vacate", "30 days"]
+  },
+  {
+    "id": "tenancy-002",
+    "act": "General Tenancy / Rental Law (India)",
+    "section": "General Principles",
+    "title": "Rent Agreement — Key Elements",
+    "text": "A valid rent/lease agreement should include: names of landlord and tenant, property address, monthly rent amount, security deposit amount, duration of tenancy, notice period for termination (typically 1 month), and any maintenance responsibilities. Agreements for 11 months or less are often not registered but are still legally valid. Agreements for 12 months or more should ideally be registered to be enforceable. NOTE: State-specific rules apply — consult a local lawyer for your situation.",
+    "source_url": "https://nalsa.gov.in/",
+    "language": "en",
+    "verified": false,
+    "keywords": ["rent agreement", "lease agreement", "rental contract", "11 months", "registration", "notice period"]
+  },
+  {
+    "id": "tenancy-003",
+    "act": "General Tenancy / Rental Law (India)",
+    "section": "General Principles",
+    "title": "Eviction — Basic Tenant Protections",
+    "text": "A tenant cannot be evicted without proper notice as specified in the rental agreement or applicable Rent Control Act. Most state laws require advance written notice (typically 1–3 months) before eviction. Forcible eviction without following legal process (including locking out a tenant, cutting utilities) is illegal and can be reported to the police or Rent Control Authority. Grounds for eviction typically include non-payment of rent, subletting without permission, or causing damage. NOTE: Laws vary widely by state — this is general guidance only.",
+    "source_url": "https://nalsa.gov.in/",
+    "language": "en",
+    "verified": false,
+    "keywords": ["eviction", "tenant protection", "illegal eviction", "notice period", "lockout", "rent control", "forcible eviction"]
+  }
+]
