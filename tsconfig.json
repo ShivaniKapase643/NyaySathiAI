@@ -26,8 +26,8 @@
         "./*"
       ]
     },
-    "target": "es2017",
-    "downlevelIteration": true
+    "target": "es2022",
+    "downlevelIteration": false,
   },
   "include": [
     "next-env.d.ts",
