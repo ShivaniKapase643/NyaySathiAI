@@ -1,6 +1,7 @@
 /**
- * LLM provider interface.
- * Swap providers by changing the LLM_PROVIDER env var (default: gemini).
+ * LLM provider interface and singleton factory.
+ * Singleton: one GeminiProvider per server instance — avoids reconstructing
+ * the GoogleGenAI client (and re-reading env vars) on every request.
  */
 import { GeminiProvider } from "./gemini";
 
@@ -12,20 +13,31 @@ export interface LLMMessage {
 export interface LLMStreamOptions {
   systemPrompt: string;
   messages: LLMMessage[];
+  /** Pass req.signal so a disconnected client cancels the upstream LLM call. */
   signal?: AbortSignal;
 }
 
 export interface LLMProvider {
-  /** Returns an async iterable of text chunks (streaming). */
   streamChat(options: LLMStreamOptions): AsyncIterable<string>;
-  /** Returns the full response as a string (non-streaming). */
   chat(options: LLMStreamOptions): Promise<string>;
 }
 
+// Singleton — created once per server process lifetime.
+// This avoids constructing a new GoogleGenAI client on every request.
+let _instance: LLMProvider | null = null;
+
 /**
- * Returns the configured LLM provider singleton.
- * Creates a new instance each time to avoid caching broken state across requests.
+ * Returns the singleton LLM provider.
+ * Safe to call from any request handler — returns the same instance.
  */
 export function getLLMProvider(): LLMProvider {
-  return new GeminiProvider();
+  if (!_instance) {
+    _instance = new GeminiProvider();
+  }
+  return _instance;
+}
+
+/** Resets the singleton — used in tests or after a key rotation. */
+export function resetLLMProvider(): void {
+  _instance = null;
 }
