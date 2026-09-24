@@ -131,14 +131,15 @@ export async function POST(req: NextRequest) {
           controller.close();
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Unknown error";
-          // Provide specific guidance for common Gemini errors
           let safeMsg = "LLM service error. Please try again.";
-          if (msg.includes("API_KEY_INVALID") || msg.includes("invalid api key") || msg.includes("API key")) {
-            safeMsg = "Invalid API key. Please check GEMINI_API_KEY in Vercel environment variables.";
-          } else if (msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
-            safeMsg = "API quota exceeded. Please try again later or check your Gemini API quota.";
-          } else if (msg.includes("MODEL_NOT_FOUND") || msg.includes("not found")) {
-            safeMsg = "AI model unavailable. Please try again in a moment.";
+          if (msg.includes("401") || msg.includes("authentication") || msg.includes("credentials")) {
+            safeMsg = "API key is invalid or expired. Please update GEMINI_API_KEY in Vercel environment variables.";
+          } else if (msg.includes("API_KEY_INVALID") || msg.includes("invalid api key")) {
+            safeMsg = "Invalid API key. Please update GEMINI_API_KEY in Vercel environment variables.";
+          } else if (msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("429")) {
+            safeMsg = "API quota exceeded. Please try again in a few minutes.";
+          } else if (msg.includes("404") || msg.includes("not found") || msg.includes("MODEL_NOT_FOUND")) {
+            safeMsg = "AI model not available. Please update GEMINI_MODEL in Vercel environment variables.";
           } else if (msg.includes("timeout") || msg.includes("timed out")) {
             safeMsg = "Request timed out. Please try again.";
           }
