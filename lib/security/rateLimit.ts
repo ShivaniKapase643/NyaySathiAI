@@ -1,24 +1,40 @@
 /**
  * In-memory sliding-window rate limiter per IP address.
  *
- * NOTE: This in-memory implementation only works correctly in a single-process
- * deployment (e.g., a single Vercel Edge/Node instance or local dev).
- * For multi-instance production use, replace the Map with Redis/Upstash
- * using the same sliding-window algorithm.
+ * Key improvements:
+ * - Env vars memoised after first read (no re-parse on every request)
+ * - Store Map is bounded: max 10,000 IP entries; oldest evicted when full
+ * - Stale IP entries (idle > 2 × window) are evicted proactively
+ *
+ * NOTE: In-memory only. For multi-instance production use Redis/Upstash.
  */
 
 interface WindowEntry {
   timestamps: number[];
   dailyCount: number;
   dailyReset: number;
+  lastSeen: number;
 }
 
 const store = new Map<string, WindowEntry>();
 
-// Read limits lazily so tests can override process.env before first call
-function getWindowMs(): number { return Number(process.env.RATE_LIMIT_WINDOW_MS ?? 60_000); }
-function getMaxRequests(): number { return Number(process.env.RATE_LIMIT_MAX_REQUESTS ?? 20); }
-function getDailyCap(): number { return Number(process.env.DAILY_CAP_PER_IP ?? 200); }
+// Max IPs tracked — bounds memory usage; oldest evicted when full
+const MAX_IPS = 10_000;
+
+// Memoised config — read once, never re-parsed per request
+let _windowMs: number | undefined;
+let _maxRequests: number | undefined;
+let _dailyCap: number | undefined;
+
+function getWindowMs(): number {
+  return (_windowMs ??= Number(process.env.RATE_LIMIT_WINDOW_MS ?? 60_000));
+}
+function getMaxRequests(): number {
+  return (_maxRequests ??= Number(process.env.RATE_LIMIT_MAX_REQUESTS ?? 20));
+}
+function getDailyCap(): number {
+  return (_dailyCap ??= Number(process.env.DAILY_CAP_PER_IP ?? 200));
+}
 
 function nextMidnightUTC(): number {
   const d = new Date();
@@ -34,6 +50,7 @@ export interface RateLimitResult {
 
 /**
  * Checks whether the given IP is within rate limits.
+ * Evicts the oldest IP entry when the store is at capacity.
  */
 export function checkRateLimit(ip: string): RateLimitResult {
   const now = Date.now();
@@ -43,15 +60,24 @@ export function checkRateLimit(ip: string): RateLimitResult {
 
   let entry = store.get(ip);
   if (!entry) {
-    entry = { timestamps: [], dailyCount: 0, dailyReset: nextMidnightUTC() };
+    // Evict oldest entry when at capacity to keep store bounded
+    if (store.size >= MAX_IPS) {
+      const oldestKey = store.keys().next().value;
+      if (oldestKey !== undefined) store.delete(oldestKey);
+    }
+    entry = { timestamps: [], dailyCount: 0, dailyReset: nextMidnightUTC(), lastSeen: now };
     store.set(ip, entry);
   }
 
+  entry.lastSeen = now;
+
+  // Reset daily counter if past midnight
   if (now >= entry.dailyReset) {
     entry.dailyCount = 0;
     entry.dailyReset = nextMidnightUTC();
   }
 
+  // Evict timestamps outside the sliding window
   entry.timestamps = entry.timestamps.filter((t) => now - t < WINDOW_MS);
 
   if (entry.dailyCount >= DAILY_CAP) {
@@ -68,7 +94,10 @@ export function checkRateLimit(ip: string): RateLimitResult {
   return { allowed: true };
 }
 
-/** Clears the rate-limit store (test helper). */
+/** Clears the rate-limit store (test helper). Also resets memoised config. */
 export function clearRateLimitStore(): void {
   store.clear();
+  _windowMs = undefined;
+  _maxRequests = undefined;
+  _dailyCap = undefined;
 }

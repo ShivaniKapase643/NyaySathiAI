@@ -1,7 +1,10 @@
 /**
  * PII redaction utilities.
- * Redacts sensitive Indian personal identifiers before sending text to any LLM.
- * Processing order matters: more specific patterns run before overlapping ones.
+ * Single-pass per pattern using replace callbacks — eliminates the previous
+ * double-scan (.test() then .replace()) that cost 10 regex passes per call.
+ *
+ * Processing order matters: more-specific patterns run before overlapping ones.
+ * All regexes are module-level constants — compiled exactly once.
  */
 
 export interface RedactionResult {
@@ -9,61 +12,41 @@ export interface RedactionResult {
   foundTypes: string[];
 }
 
-// Indian mobile: optional +91/0091/0 prefix, then 10 digits starting with 6-9
-// Must run BEFORE Aadhaar (which also matches 12 digits) and BEFORE UPI
+// Module-level compiled regexes — never recompiled per call
+// Phone first (before Aadhaar): +91/0 prefix + 10 digits starting 6-9
 const PHONE_RE = /(?:(?:\+91|0091|0)[-\s]?)?[6-9]\d{9}\b/g;
-
-// Aadhaar: exactly 12 digits (with optional spaces every 4 digits)
-// Use word boundary and negative lookahead to avoid matching phone + extra digits
+// Aadhaar: 12 digits, optionally spaced every 4
 const AADHAAR_RE = /\b\d{4}[\s]?\d{4}[\s]?\d{4}\b/g;
-
-// PAN: 5 uppercase alpha, 4 digits, 1 uppercase alpha
+// PAN: 5 upper alpha, 4 digits, 1 upper alpha
 const PAN_RE = /\b[A-Z]{5}\d{4}[A-Z]\b/g;
-
-// Email (standard format) -- must run BEFORE UPI since UPI is a subset
+// Email before UPI (email has a TLD dot; UPI does not)
 const EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
-
-// UPI ID: identifier@bankhandle WITHOUT a dot after @ (distinguishes from email)
+// UPI: identifier@bankhandle without a dot after @
 const UPI_RE = /[a-zA-Z0-9.\-_+]+@[a-zA-Z]{3,}(?!\.[a-zA-Z])/g;
 
 /**
- * Redacts PII from the given text.
- * Returns the cleaned text and a list of PII types found.
- * Order: Phone -> Aadhaar -> PAN -> Email -> UPI
+ * Redacts PII in a single pass per pattern using replace callbacks.
+ * Returns the sanitised string and a deduplicated list of PII types found.
  */
 export function redactPII(text: string): RedactionResult {
-  const foundTypes: string[] = [];
+  const foundSet = new Set<string>();
   let result = text;
 
-  // 1. Phone first (before Aadhaar, since +91XXXXXXXXXX could match as 12-digit block)
+  // Single-pass replace: callback fires once per match, sets the flag, returns placeholder
   PHONE_RE.lastIndex = 0;
-  if (PHONE_RE.test(result)) foundTypes.push("PHONE");
-  PHONE_RE.lastIndex = 0;
-  result = result.replace(PHONE_RE, "[PHONE_REDACTED]");
+  result = result.replace(PHONE_RE, () => { foundSet.add("PHONE"); return "[PHONE_REDACTED]"; });
 
-  // 2. Aadhaar (12-digit patterns remaining after phone redaction)
   AADHAAR_RE.lastIndex = 0;
-  if (AADHAAR_RE.test(result)) foundTypes.push("AADHAAR");
-  AADHAAR_RE.lastIndex = 0;
-  result = result.replace(AADHAAR_RE, "[AADHAAR_REDACTED]");
+  result = result.replace(AADHAAR_RE, () => { foundSet.add("AADHAAR"); return "[AADHAAR_REDACTED]"; });
 
-  // 3. PAN
   PAN_RE.lastIndex = 0;
-  if (PAN_RE.test(result)) foundTypes.push("PAN");
-  PAN_RE.lastIndex = 0;
-  result = result.replace(PAN_RE, "[PAN_REDACTED]");
+  result = result.replace(PAN_RE, () => { foundSet.add("PAN"); return "[PAN_REDACTED]"; });
 
-  // 4. Email (before UPI -- email has a TLD dot, UPI does not)
   EMAIL_RE.lastIndex = 0;
-  if (EMAIL_RE.test(result)) foundTypes.push("EMAIL");
-  EMAIL_RE.lastIndex = 0;
-  result = result.replace(EMAIL_RE, "[EMAIL_REDACTED]");
+  result = result.replace(EMAIL_RE, () => { foundSet.add("EMAIL"); return "[EMAIL_REDACTED]"; });
 
-  // 5. UPI (remaining @handle patterns without TLD)
   UPI_RE.lastIndex = 0;
-  if (UPI_RE.test(result)) foundTypes.push("UPI");
-  UPI_RE.lastIndex = 0;
-  result = result.replace(UPI_RE, "[UPI_REDACTED]");
+  result = result.replace(UPI_RE, () => { foundSet.add("UPI"); return "[UPI_REDACTED]"; });
 
-  return { redacted: result, foundTypes: Array.from(new Set(foundTypes)) };
+  return { redacted: result, foundTypes: Array.from(foundSet) };
 }
