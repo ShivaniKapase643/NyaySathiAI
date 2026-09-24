@@ -130,9 +130,18 @@ export async function POST(req: NextRequest) {
           qaCache.set(cacheKey, fullResponse);
           controller.close();
         } catch (err) {
-          const msg =
-            err instanceof Error ? err.message : "Unknown error";
-          const safeMsg = msg.includes("API") ? "LLM service error. Please try again." : msg;
+          const msg = err instanceof Error ? err.message : "Unknown error";
+          // Provide specific guidance for common Gemini errors
+          let safeMsg = "LLM service error. Please try again.";
+          if (msg.includes("API_KEY_INVALID") || msg.includes("invalid api key") || msg.includes("API key")) {
+            safeMsg = "Invalid API key. Please check GEMINI_API_KEY in Vercel environment variables.";
+          } else if (msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
+            safeMsg = "API quota exceeded. Please try again later or check your Gemini API quota.";
+          } else if (msg.includes("MODEL_NOT_FOUND") || msg.includes("not found")) {
+            safeMsg = "AI model unavailable. Please try again in a moment.";
+          } else if (msg.includes("timeout") || msg.includes("timed out")) {
+            safeMsg = "Request timed out. Please try again.";
+          }
           controller.enqueue(encoder.encode(`\n\n[Error: ${safeMsg}]`));
           controller.close();
         }
