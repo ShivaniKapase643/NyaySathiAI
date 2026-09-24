@@ -8,7 +8,14 @@
     "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
     "language": "en",
     "verified": false,
-    "keywords": ["RTI", "application", "how to file", "CPIO", "SPIO", "information request"]
+    "keywords": [
+      "RTI",
+      "application",
+      "how to file",
+      "CPIO",
+      "SPIO",
+      "information request"
+    ]
   },
   {
     "id": "rti-002",
@@ -19,7 +26,15 @@
     "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
     "language": "en",
     "verified": false,
-    "keywords": ["RTI", "30 days", "reply timeline", "response time", "deadline", "48 hours", "life liberty"]
+    "keywords": [
+      "RTI",
+      "30 days",
+      "reply timeline",
+      "response time",
+      "deadline",
+      "48 hours",
+      "life liberty"
+    ]
   },
   {
     "id": "rti-003",
@@ -30,7 +45,15 @@
     "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
     "language": "en",
     "verified": false,
-    "keywords": ["RTI", "fee", "Rs 10", "cost", "BPL", "exemption", "payment"]
+    "keywords": [
+      "RTI",
+      "fee",
+      "Rs 10",
+      "cost",
+      "BPL",
+      "exemption",
+      "payment"
+    ]
   },
   {
     "id": "rti-004",
@@ -41,7 +64,14 @@
     "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
     "language": "en",
     "verified": false,
-    "keywords": ["RTI", "first appeal", "appellate authority", "dissatisfied", "30 days", "appeal process"]
+    "keywords": [
+      "RTI",
+      "first appeal",
+      "appellate authority",
+      "dissatisfied",
+      "30 days",
+      "appeal process"
+    ]
   },
   {
     "id": "rti-005",
@@ -52,7 +82,15 @@
     "source_url": "https://www.indiacode.nic.in/handle/123456789/2065",
     "language": "en",
     "verified": false,
-    "keywords": ["RTI", "exemptions", "refused", "withheld", "national security", "privacy", "fiduciary"]
+    "keywords": [
+      "RTI",
+      "exemptions",
+      "refused",
+      "withheld",
+      "national security",
+      "privacy",
+      "fiduciary"
+    ]
   },
   {
     "id": "cpa-001",
@@ -63,7 +101,15 @@
     "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
     "language": "en",
     "verified": false,
-    "keywords": ["consumer", "definition", "who is consumer", "buyer", "services", "goods", "online"]
+    "keywords": [
+      "consumer",
+      "definition",
+      "who is consumer",
+      "buyer",
+      "services",
+      "goods",
+      "online"
+    ]
   },
   {
     "id": "cpa-002",
@@ -74,7 +120,14 @@
     "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
     "language": "en",
     "verified": false,
-    "keywords": ["consumer rights", "six rights", "right to safety", "right to information", "right to choice", "redressal"]
+    "keywords": [
+      "consumer rights",
+      "six rights",
+      "right to safety",
+      "right to information",
+      "right to choice",
+      "redressal"
+    ]
   },
   {
     "id": "cpa-003",
@@ -85,7 +138,15 @@
     "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
     "language": "en",
     "verified": false,
-    "keywords": ["consumer complaint", "how to file", "District Forum", "State Commission", "National Commission", "eDaakhil", "online complaint"]
+    "keywords": [
+      "consumer complaint",
+      "how to file",
+      "District Forum",
+      "State Commission",
+      "National Commission",
+      "eDaakhil",
+      "online complaint"
+    ]
   },
   {
     "id": "cpa-004",
@@ -96,7 +157,14 @@
     "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
     "language": "en",
     "verified": false,
-    "keywords": ["consumer complaint", "limitation period", "2 years", "time limit", "deadline", "time-barred"]
+    "keywords": [
+      "consumer complaint",
+      "limitation period",
+      "2 years",
+      "time limit",
+      "deadline",
+      "time-barred"
+    ]
   },
   {
     "id": "cpa-005",
@@ -107,7 +175,13 @@
     "source_url": "https://consumeraffairs.nic.in/consumer-protection-act-2019",
     "language": "en",
     "verified": false,
-    "keywords": ["unfair trade practices", "false advertisement", "misleading", "consumer fraud", "CCPA"]
+    "keywords": [
+      "unfair trade practices",
+      "false advertisement",
+      "misleading",
+      "consumer fraud",
+      "CCPA"
+    ]
   },
   {
     "id": "tenancy-001",
@@ -118,7 +192,15 @@
     "source_url": "https://nalsa.gov.in/",
     "language": "en",
     "verified": false,
-    "keywords": ["security deposit", "deposit refund", "tenant rights", "landlord", "rent", "vacate", "30 days"]
+    "keywords": [
+      "security deposit",
+      "deposit refund",
+      "tenant rights",
+      "landlord",
+      "rent",
+      "vacate",
+      "30 days"
+    ]
   },
   {
     "id": "tenancy-002",
@@ -129,7 +211,14 @@
     "source_url": "https://nalsa.gov.in/",
     "language": "en",
     "verified": false,
-    "keywords": ["rent agreement", "lease agreement", "rental contract", "11 months", "registration", "notice period"]
+    "keywords": [
+      "rent agreement",
+      "lease agreement",
+      "rental contract",
+      "11 months",
+      "registration",
+      "notice period"
+    ]
   },
   {
     "id": "tenancy-003",
@@ -140,6 +229,148 @@
     "source_url": "https://nalsa.gov.in/",
     "language": "en",
     "verified": false,
-    "keywords": ["eviction", "tenant protection", "illegal eviction", "notice period", "lockout", "rent control", "forcible eviction"]
+    "keywords": [
+      "eviction",
+      "tenant protection",
+      "illegal eviction",
+      "notice period",
+      "lockout",
+      "rent control",
+      "forcible eviction"
+    ]
+  },
+  {
+    "id": "labour-001",
+    "act": "Minimum Wages Act, 1948",
+    "section": "Section 3 & 12",
+    "title": "Right to Minimum Wage",
+    "text": "Every worker in India is entitled to receive at least the minimum wage fixed by the Central or State Government for their category of work. Employers cannot pay less than the minimum wage. Workers can file a complaint with the Labour Commissioner if their employer pays below minimum wage. The complaint can be filed within 6 months of the underpayment.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/1380",
+    "language": "en",
+    "verified": false,
+    "keywords": [
+      "minimum wage",
+      "salary",
+      "worker rights",
+      "labour",
+      "underpaid",
+      "employer",
+      "complaint"
+    ]
+  },
+  {
+    "id": "labour-002",
+    "act": "Payment of Gratuity Act, 1972",
+    "section": "Section 4",
+    "title": "Gratuity Rights for Employees",
+    "text": "An employee who has completed at least 5 years of continuous service is entitled to gratuity on termination, retirement, resignation, or death. The gratuity amount is calculated as 15 days salary for each year of service. The maximum gratuity payable is Rs. 20 lakhs. If the employer refuses to pay, the employee can file a claim before the Controlling Authority within 1 year.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/1631",
+    "language": "en",
+    "verified": false,
+    "keywords": [
+      "gratuity",
+      "5 years service",
+      "retirement",
+      "employee rights",
+      "termination",
+      "resignation"
+    ]
+  },
+  {
+    "id": "domestic-violence-001",
+    "act": "Protection of Women from Domestic Violence Act, 2005",
+    "section": "Section 2(a) & Section 12",
+    "title": "Protection from Domestic Violence",
+    "text": "A woman who is or has been in a domestic relationship and has suffered domestic violence can approach a Magistrate for protection orders, residence orders, and monetary relief. Domestic violence includes physical, verbal, emotional, sexual, and economic abuse. The aggrieved woman can contact a Protection Officer or directly file an application before the Magistrate. The court can pass emergency protection orders within 3 days.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/2021",
+    "language": "en",
+    "verified": false,
+    "keywords": [
+      "domestic violence",
+      "women rights",
+      "protection order",
+      "abuse",
+      "magistrate",
+      "wife",
+      "shelter"
+    ]
+  },
+  {
+    "id": "sc-st-001",
+    "act": "Scheduled Castes and Scheduled Tribes (Prevention of Atrocities) Act, 1989",
+    "section": "Section 3 & Section 15A",
+    "title": "Rights of SC/ST Persons Against Atrocities",
+    "text": "The SC/ST (Prevention of Atrocities) Act protects Scheduled Caste and Scheduled Tribe persons from specific offences like forcible dispossession of land, carrying footwear in processions, forcing someone to eat inedible substances, and causing humiliation. Victims have the right to free legal aid, and State governments must appoint Special Public Prosecutors. Cases must be tried in Special Courts. Victims are entitled to relief and rehabilitation.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/1605",
+    "language": "en",
+    "verified": false,
+    "keywords": [
+      "SC ST",
+      "atrocities",
+      "dalit rights",
+      "discrimination",
+      "scheduled caste",
+      "scheduled tribe",
+      "caste"
+    ]
+  },
+  {
+    "id": "motor-accident-001",
+    "act": "Motor Vehicles Act, 1988",
+    "section": "Section 163A & Section 166",
+    "title": "Motor Accident Compensation Claims",
+    "text": "Victims of motor accidents or their legal heirs can claim compensation before the Motor Accident Claims Tribunal (MACT). Claims must be filed within 6 months under Section 163A (no-fault liability) or within 6 months to 1 year under Section 166. Third-party insurance is mandatory for all vehicles. The Tribunal can award compensation for death, permanent disability, and medical expenses. A lawyer is not required to file a claim.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/1798",
+    "language": "en",
+    "verified": false,
+    "keywords": [
+      "motor accident",
+      "road accident",
+      "compensation",
+      "MACT",
+      "insurance",
+      "death",
+      "disability",
+      "claim"
+    ]
+  },
+  {
+    "id": "property-001",
+    "act": "Registration Act, 1908 & Transfer of Property Act, 1882",
+    "section": "Section 17 (Registration Act)",
+    "title": "Property Registration — Why It Matters",
+    "text": "Any sale, gift, or transfer of immovable property worth more than Rs. 100 must be registered with the Sub-Registrar. An unregistered sale deed cannot be used as evidence of title in court. Registration protects the buyer's ownership. Stamp duty (varies by state, typically 5-7% of property value) and registration charges (typically 1%) must be paid. Buying property without registration puts ownership at risk.",
+    "source_url": "https://www.indiacode.nic.in/handle/123456789/1306",
+    "language": "en",
+    "verified": false,
+    "keywords": [
+      "property registration",
+      "sale deed",
+      "stamp duty",
+      "sub registrar",
+      "immovable property",
+      "land",
+      "house"
+    ]
+  },
+  {
+    "id": "bail-001",
+    "act": "Code of Criminal Procedure, 1973 (CrPC) / Bharatiya Nagarik Suraksha Sanhita, 2023",
+    "section": "Section 436 & 437 CrPC",
+    "title": "Right to Bail — Basic Principles",
+    "text": "Bail is the release of an accused person from custody pending trial. For bailable offences, bail is a right and must be granted. For non-bailable offences, bail is at the court's discretion. First-time offenders and women accused of non-bailable offences may be given preference for bail. An accused has the right to be represented by a lawyer. If unable to afford a lawyer, free legal aid must be provided under the Legal Services Authorities Act.",
+    "source_url": "https://nalsa.gov.in/",
+    "language": "en",
+    "verified": false,
+    "keywords": [
+      "bail",
+      "arrested",
+      "custody",
+      "bailable offence",
+      "non bailable",
+      "court",
+      "free legal aid",
+      "lawyer"
+    ]
   }
 ]

@@ -23,16 +23,48 @@ const securityHeaders = [
   },
 ];
 
+// Cache headers for static assets — improves Lighthouse performance + efficiency score
+const staticCacheHeaders = [
+  {
+    key: "Cache-Control",
+    value: "public, max-age=31536000, immutable",
+  },
+];
+
 const nextConfig = {
+  // Enable gzip/brotli compression for all responses
+  compress: true,
+
+  // Power header removed — reduces fingerprinting
+  poweredByHeader: false,
+
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      // Security headers on all routes
+      { source: "/(.*)", headers: securityHeaders },
+      // Long-lived cache on Next.js static chunks (content-hashed filenames)
+      {
+        source: "/_next/static/(.*)",
+        headers: staticCacheHeaders,
+      },
+      // Cache public assets
+      {
+        source: "/(.*)\\.(ico|png|jpg|jpeg|svg|webp|woff2|woff)",
+        headers: staticCacheHeaders,
+      },
+    ];
   },
+
+  // Reduce bundle size by marking large server-only packages as external
   experimental: {
-    serverComponentsExternalPackages: [],
+    serverComponentsExternalPackages: ["@google/genai", "pdfjs-dist"],
   },
-  webpack: (config) => {
-    // Allow pdfjs-dist legacy build to work in the browser bundle
-    config.resolve.alias["canvas"] = false;
+
+  webpack: (config, { isServer }) => {
+    // Prevent canvas (pdfjs optional dep) from breaking browser build
+    if (!isServer) {
+      config.resolve.alias["canvas"] = false;
+    }
     return config;
   },
 };

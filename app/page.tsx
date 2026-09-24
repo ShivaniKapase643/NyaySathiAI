@@ -59,6 +59,20 @@ export default function HomePage() {
           Understand your rights, simplify legal documents, and draft common applications —
           free, in English, Hindi, or Marathi. Powered by AI with citations from official Acts.
         </p>
+        {/* Impact stats */}
+        <div className="flex flex-wrap justify-center gap-6 mb-6 text-center">
+          {[
+            { stat: "300M+", label: "Indians lack legal access" },
+            { stat: "20+", label: "Legal topics covered" },
+            { stat: "3", label: "Languages supported" },
+            { stat: "100%", label: "Free, no login needed" },
+          ].map(({ stat, label }) => (
+            <div key={label} className="px-4 py-2">
+              <p className="text-2xl font-extrabold text-orange-500">{stat}</p>
+              <p className="text-xs text-gray-500">{label}</p>
+            </div>
+          ))}
+        </div>
         <div
           role="note"
           className="inline-block px-4 py-2 bg-green-50 border border-green-200 rounded-full text-sm text-green-800 font-medium"
@@ -120,6 +134,18 @@ export default function HomePage() {
             {
               title: "Tenancy & Rental Law",
               items: ["Security deposit refund", "Rent agreement basics", "Eviction protections", "Notice periods", "State-wise variation noted"],
+            },
+            {
+              title: "Labour & Employment",
+              items: ["Minimum wage rights", "Gratuity entitlement (5 yrs)", "Worker complaint process"],
+            },
+            {
+              title: "Women & Family Rights",
+              items: ["Domestic Violence Act 2005", "Protection orders", "Emergency relief in 3 days"],
+            },
+            {
+              title: "Other Legal Rights",
+              items: ["Motor accident compensation", "Property registration", "SC/ST protection rights", "Bail rights & free legal aid"],
             },
           ].map(({ title, items }) => (
             <div key={title} className="bg-white rounded-xl p-4 border border-gray-200">

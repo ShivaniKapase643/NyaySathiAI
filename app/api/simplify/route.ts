@@ -5,6 +5,7 @@ import { checkRateLimit } from "@/lib/security/rateLimit";
 import { checkInjection, wrapDocumentForPrompt } from "@/lib/security/injectionGuard";
 import { getLLMProvider } from "@/lib/llm/provider";
 import { SIMPLIFY_SYSTEM_PROMPT, buildSimplifyPrompt } from "@/lib/llm/prompts";
+import { simplifyCache, normalizeCacheKey } from "@/lib/cache";
 import { z } from "zod";
 
 export const runtime = "nodejs";
@@ -72,6 +73,15 @@ export async function POST(req: NextRequest) {
       ? "Respond entirely in Marathi (Devanagari script). All field values in the JSON must be in Marathi."
       : "Respond in English.";
 
+  // Check simplify cache
+  const cacheKey = normalizeCacheKey(cleanText.slice(0, 200), language);
+  const cached = simplifyCache.get(cacheKey);
+  if (cached) {
+    try {
+      return NextResponse.json(JSON.parse(cached), { status: 200, headers: { "X-Cache": "HIT" } });
+    } catch { /* ignore parse error, proceed to LLM */ }
+  }
+
   const systemPrompt = `${SIMPLIFY_SYSTEM_PROMPT}\nLanguage instruction: ${langInstruction}`;
   const wrappedText = wrapDocumentForPrompt(cleanText);
   const userMessage = buildSimplifyPrompt(wrappedText);
@@ -105,6 +115,9 @@ export async function POST(req: NextRequest) {
         { status: 502 }
       );
     }
+
+    // Cache the validated result
+    simplifyCache.set(cacheKey, JSON.stringify(validated.data));
 
     return NextResponse.json(validated.data, { status: 200 });
   } catch (err) {
