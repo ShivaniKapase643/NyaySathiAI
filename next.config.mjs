@@ -30,6 +30,11 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: [],
   },
+  webpack: (config) => {
+    // Allow pdfjs-dist legacy build to work in the browser bundle
+    config.resolve.alias["canvas"] = false;
+    return config;
+  },
 };
 
 export default nextConfig;

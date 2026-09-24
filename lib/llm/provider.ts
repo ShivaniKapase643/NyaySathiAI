@@ -22,20 +22,10 @@ export interface LLMProvider {
   chat(options: LLMStreamOptions): Promise<string>;
 }
 
-let _instance: LLMProvider | null = null;
-
 /**
  * Returns the configured LLM provider singleton.
- * Lazy-initialised so missing API keys fail at request time, not startup.
+ * Creates a new instance each time to avoid caching broken state across requests.
  */
 export function getLLMProvider(): LLMProvider {
-  if (!_instance) {
-    _instance = new GeminiProvider();
-  }
-  return _instance;
-}
-
-/** Reset the singleton (test helper). */
-export function resetLLMProvider(): void {
-  _instance = null;
+  return new GeminiProvider();
 }

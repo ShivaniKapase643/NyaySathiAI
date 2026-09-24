@@ -23,16 +23,20 @@ const MAX_CHARS = 15_000;
 
 /**
  * Extracts plain text from a PDF file using pdfjs-dist (loaded dynamically).
- * Returns clean readable text, not raw binary.
+ * Uses the legacy build with a fake worker to avoid CDN/bundler issues on Vercel.
  */
 async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
-  // Dynamically import pdfjs-dist to keep initial bundle small
-  const pdfjsLib = await import("pdfjs-dist");
+  // Use the legacy build — it runs entirely in the main thread, no worker needed.
+  // This avoids all CDN/bundler worker URL issues on Vercel and other platforms.
+  const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "";
 
-  // Point the worker to the CDN — avoids bundling the large worker file
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-
-  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
+  const loadingTask = pdfjsLib.getDocument({
+    data: new Uint8Array(arrayBuffer),
+    useWorkerFetch: false,
+    isEvalSupported: false,
+    useSystemFonts: true,
+  });
   const pdf = await loadingTask.promise;
 
   let fullText = "";
@@ -43,8 +47,6 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
       .map((item) => ("str" in item ? item.str : ""))
       .join(" ");
     fullText += pageText + "\n";
-
-    // Stop early if we've already hit the character limit
     if (fullText.length >= MAX_CHARS) break;
   }
 
