@@ -21,10 +21,41 @@ interface SimplifyResult {
 const MAX_SIZE = 2 * 1024 * 1024;
 const MAX_CHARS = 15_000;
 
+/**
+ * Extracts plain text from a PDF file using pdfjs-dist (loaded dynamically).
+ * Returns clean readable text, not raw binary.
+ */
+async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
+  // Dynamically import pdfjs-dist to keep initial bundle small
+  const pdfjsLib = await import("pdfjs-dist");
+
+  // Point the worker to the CDN — avoids bundling the large worker file
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
+  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
+  const pdf = await loadingTask.promise;
+
+  let fullText = "";
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
+    const content = await page.getTextContent();
+    const pageText = content.items
+      .map((item) => ("str" in item ? item.str : ""))
+      .join(" ");
+    fullText += pageText + "\n";
+
+    // Stop early if we've already hit the character limit
+    if (fullText.length >= MAX_CHARS) break;
+  }
+
+  return fullText.trim().slice(0, MAX_CHARS);
+}
+
 export default function SimplifyPage() {
   const [text, setText] = useState("");
   const [result, setResult] = useState<SimplifyResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
   const [error, setError] = useState("");
   const [filename, setFilename] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -40,42 +71,32 @@ export default function SimplifyPage() {
       setError("Only .txt and .pdf files are supported.");
       return;
     }
+
     setFilename(file.name);
     setError("");
+    setText("");
 
     if (ext === ".txt") {
       const txt = await file.text();
       setText(txt.slice(0, MAX_CHARS));
     } else {
-      // PDF: read as ArrayBuffer, send to an endpoint or use pdfjs on client
-      // For simplicity we send the raw text extracted server-side via a FormData approach
-      // Here we read the file and convert to base64 for a simplified upload
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const arrayBuffer = reader.result as ArrayBuffer;
-        const bytes = new Uint8Array(arrayBuffer);
-        // Basic PDF text extraction: look for BT/ET blocks (simplified)
-        // In production this would use pdfjs-dist. We send raw bytes and parse server-side.
-        // For this implementation, extract visible text using a simple heuristic
-        let extracted = "";
-        const decoder = new TextDecoder("utf-8", { fatal: false });
-        const raw = decoder.decode(bytes);
-        // Extract text between BT and ET markers (very simplified)
-        const matches = Array.from(raw.matchAll(/BT[^]*?ET/g));
-        for (const m of matches) {
-          const textMatches = m[0].matchAll(/\(([^)]+)\)/g);
-          for (const tm of textMatches) {
-            extracted += tm[1] + " ";
-          }
+      // PDF: use pdfjs-dist for proper text extraction
+      setIsParsing(true);
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const extracted = await extractTextFromPDF(arrayBuffer);
+        if (extracted.trim().length < 20) {
+          setError("Could not extract text from this PDF. It may be a scanned image. Please copy-paste the text manually.");
+          setText("");
+        } else {
+          setText(extracted);
         }
-        // Fall back to raw printable characters if nothing extracted
-        if (extracted.trim().length < 50) {
-          extracted = raw.replace(/[^\x20-\x7Eа-яА-ЯёЁ\u0900-\u097F\u0A00-\u0A7F\n\r\t]/g, " ")
-            .replace(/\s+/g, " ").trim();
-        }
-        setText(extracted.slice(0, MAX_CHARS));
-      };
-      reader.readAsArrayBuffer(file);
+      } catch (err) {
+        setError("Failed to read PDF. Please try copy-pasting the text instead.");
+        console.error("PDF extraction error:", err);
+      } finally {
+        setIsParsing(false);
+      }
     }
   };
 
@@ -154,7 +175,7 @@ export default function SimplifyPage() {
               }}
             />
             <p className="text-sm text-gray-500">
-              📎 {filename || "Click to upload or drag & drop (.txt or .pdf, max 2 MB)"}
+              📎 {isParsing ? "Extracting text from PDF..." : filename || "Click to upload or drag & drop (.txt or .pdf, max 2 MB)"}
             </p>
           </div>
         </div>
@@ -181,11 +202,11 @@ export default function SimplifyPage() {
 
         <button
           type="submit"
-          disabled={isLoading || !text.trim()}
+          disabled={isLoading || isParsing || !text.trim()}
           className="px-6 py-2.5 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          aria-busy={isLoading}
+          aria-busy={isLoading || isParsing}
         >
-          {isLoading ? "Analysing..." : "Simplify Document"}
+          {isParsing ? "Reading PDF..." : isLoading ? "Analysing..." : "Simplify Document"}
         </button>
       </form>
 
