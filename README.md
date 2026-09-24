@@ -1,12 +1,12 @@
 # ⚖️ NyayaSaathi — Free Legal Help for Every Indian
 
-[![CI](https://github.com/YOUR_USERNAME/nyayasaathi/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/nyayasaathi/actions)
+[![CI](https://github.com/ShivaniKapase643/NyaySathiAI/actions/workflows/ci.yml/badge.svg)](https://github.com/ShivaniKapase643/NyaySathiAI/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/tests-104%20passing-brightgreen)](./tests)
 
 > **न्याय** (Nyaya) = Justice · **साथी** (Saathi) = Companion
 
-**Live demo:** [nyayasaathi.vercel.app](https://nyayasaathi.vercel.app) *(no login required)*
+**GitHub:** [github.com/ShivaniKapase643/NyaySathiAI](https://github.com/ShivaniKapase643/NyaySathiAI)
 
 ---
 
@@ -92,7 +92,7 @@ graph TB
 - Free Gemini API key: [makersuite.google.com/app/apikey](https://makersuite.google.com/app/apikey)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/nyayasaathi.git
+git clone https://github.com/ShivaniKapase643/NyaySathiAI.git
 cd nyayasaathi
 npm install
 cp .env.example .env.local
