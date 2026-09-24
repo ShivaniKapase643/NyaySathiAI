@@ -6,19 +6,17 @@ import { checkInjection, wrapDocumentForPrompt } from "@/lib/security/injectionG
 import { getLLMProvider } from "@/lib/llm/provider";
 import { SIMPLIFY_SYSTEM_PROMPT, buildSimplifyPrompt } from "@/lib/llm/prompts";
 import { simplifyCache, normalizeCacheKey } from "@/lib/cache";
+import { getIP } from "@/lib/request";
 import { z } from "zod";
+import { createHash } from "crypto";
 
 export const runtime = "nodejs";
 
-function getIP(req: NextRequest): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown"
-  );
-}
+// Hoisted module-level regexes — compiled once, not per request
+const JSON_FENCE_RE = /```(?:json)?\s*([\s\S]*?)```/;
+const JSON_OBJECT_RE = /(\{[\s\S]*\})/;
 
-/** Zod schema for the structured output from the LLM */
+/** Zod schema for LLM structured output */
 const SimplifyOutputSchema = z.object({
   summary: z.string(),
   documentType: z.string(),
@@ -29,6 +27,16 @@ const SimplifyOutputSchema = z.object({
   nextSteps: z.array(z.string()).default([]),
   disclaimer: z.string().optional(),
 });
+
+/**
+ * Stable cache key for document simplification.
+ * Uses a SHA-256 hash of the full text so documents with identical first 200 chars
+ * but different bodies don't collide (previous bug).
+ */
+function simplifyCacheKey(text: string, language: string): string {
+  const hash = createHash("sha256").update(text).digest("hex").slice(0, 16);
+  return `simplify:${language}:${hash}`;
+}
 
 export async function POST(req: NextRequest) {
   const ip = getIP(req);
@@ -54,7 +62,7 @@ export async function POST(req: NextRequest) {
 
   const { text, language } = parsed.data;
 
-  // Injection guard — check before redacting so patterns are not obscured
+  // Injection guard before redaction (patterns easier to detect in raw text)
   const injectionCheck = checkInjection(text);
   if (!injectionCheck.safe) {
     return NextResponse.json(
@@ -63,8 +71,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Redact PII in document before sending to LLM
+  // Redact PII before sending to LLM
   const { redacted: cleanText } = redactPII(text);
+
+  // Stable cache key using full-text hash — no first-200-chars collision bug
+  const cacheKey = simplifyCacheKey(cleanText, language);
+  const cached = simplifyCache.get(cacheKey);
+  if (cached) {
+    try {
+      return NextResponse.json(JSON.parse(cached), { status: 200, headers: { "X-Cache": "HIT" } });
+    } catch { /* ignore — fall through to LLM */ }
+  }
 
   const langInstruction =
     language === "hi"
@@ -73,29 +90,26 @@ export async function POST(req: NextRequest) {
       ? "Respond entirely in Marathi (Devanagari script). All field values in the JSON must be in Marathi."
       : "Respond in English.";
 
-  // Check simplify cache
-  const cacheKey = normalizeCacheKey(cleanText.slice(0, 200), language);
-  const cached = simplifyCache.get(cacheKey);
-  if (cached) {
-    try {
-      return NextResponse.json(JSON.parse(cached), { status: 200, headers: { "X-Cache": "HIT" } });
-    } catch { /* ignore parse error, proceed to LLM */ }
-  }
-
   const systemPrompt = `${SIMPLIFY_SYSTEM_PROMPT}\nLanguage instruction: ${langInstruction}`;
   const wrappedText = wrapDocumentForPrompt(cleanText);
   const userMessage = buildSimplifyPrompt(wrappedText);
 
   try {
-    const provider = getLLMProvider();
-    const rawResponse = await provider.chat({
-      systemPrompt,
-      messages: [{ role: "user", content: userMessage }],
-    });
+    // In-flight deduplication: concurrent identical documents share one LLM call
+    const rawResponse = await simplifyCache.getOrSetInFlight(
+      `inflight:${cacheKey}`,
+      async () => {
+        const provider = getLLMProvider(); // singleton
+        return provider.chat({
+          systemPrompt,
+          messages: [{ role: "user", content: userMessage }],
+          signal: req.signal, // AbortSignal for client disconnect
+        });
+      }
+    );
 
-    // Extract JSON from response (model may wrap it in markdown code fences)
-    const jsonMatch = rawResponse.match(/```(?:json)?\s*([\s\S]*?)```/) ??
-      rawResponse.match(/(\{[\s\S]*\})/);
+    // Extract JSON — use hoisted module-level regexes (not re-compiled per call)
+    const jsonMatch = JSON_FENCE_RE.exec(rawResponse) ?? JSON_OBJECT_RE.exec(rawResponse);
     const jsonStr = jsonMatch ? jsonMatch[1] : rawResponse;
 
     let parsed2: unknown;
@@ -116,12 +130,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Cache the validated result
+    // Cache validated result
     simplifyCache.set(cacheKey, JSON.stringify(validated.data));
-
     return NextResponse.json(validated.data, { status: 200 });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Service error";
+    if (msg.includes("aborted") || msg.includes("abort")) {
+      return NextResponse.json({ error: "Request cancelled." }, { status: 499 });
+    }
     const safeMsg = msg.startsWith("GEMINI_API_KEY")
       ? "AI service is not configured."
       : "AI service is temporarily unavailable. Please try again.";

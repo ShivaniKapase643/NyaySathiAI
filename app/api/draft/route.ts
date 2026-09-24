@@ -13,16 +13,14 @@ import {
 } from "@/lib/drafting/schemas";
 import { getLLMProvider } from "@/lib/llm/provider";
 import { DRAFT_SYSTEM_PROMPT, buildDraftPrompt } from "@/lib/llm/prompts";
+import { LRUCache } from "@/lib/cache";
+import { getIP } from "@/lib/request";
 
 export const runtime = "nodejs";
 
-function getIP(req: NextRequest): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown"
-  );
-}
+// Draft translation cache — bounded at 30 entries, 30 min TTL
+// LLM is only called for Hindi/Marathi; English drafts are fully deterministic
+const draftCache = new LRUCache(30, 30 * 60 * 1000);
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: "English",
@@ -54,70 +52,63 @@ export async function POST(req: NextRequest) {
 
   const { templateId, fields, language } = parsed.data;
 
-  // Validate and generate template based on type
   let templateResult: { title: string; body: string };
 
   try {
     if (templateId === "rti") {
-      const fieldsParsed = RTIFieldsSchema.safeParse(fields);
-      if (!fieldsParsed.success) {
-        return NextResponse.json(
-          { error: "Invalid RTI fields", details: fieldsParsed.error.flatten() },
-          { status: 400 }
-        );
+      const fp = RTIFieldsSchema.safeParse(fields);
+      if (!fp.success) {
+        return NextResponse.json({ error: "Invalid RTI fields", details: fp.error.flatten() }, { status: 400 });
       }
-      templateResult = generateRTITemplate(fieldsParsed.data);
+      templateResult = generateRTITemplate(fp.data);
     } else if (templateId === "consumer_complaint") {
-      const fieldsParsed = ConsumerComplaintFieldsSchema.safeParse(fields);
-      if (!fieldsParsed.success) {
-        return NextResponse.json(
-          { error: "Invalid consumer complaint fields", details: fieldsParsed.error.flatten() },
-          { status: 400 }
-        );
+      const fp = ConsumerComplaintFieldsSchema.safeParse(fields);
+      if (!fp.success) {
+        return NextResponse.json({ error: "Invalid consumer complaint fields", details: fp.error.flatten() }, { status: 400 });
       }
-      templateResult = generateConsumerComplaintTemplate(fieldsParsed.data);
+      templateResult = generateConsumerComplaintTemplate(fp.data);
     } else {
-      const fieldsParsed = LegalNoticeFieldsSchema.safeParse(fields);
-      if (!fieldsParsed.success) {
-        return NextResponse.json(
-          { error: "Invalid legal notice fields", details: fieldsParsed.error.flatten() },
-          { status: 400 }
-        );
+      const fp = LegalNoticeFieldsSchema.safeParse(fields);
+      if (!fp.success) {
+        return NextResponse.json({ error: "Invalid legal notice fields", details: fp.error.flatten() }, { status: 400 });
       }
-      templateResult = generateLegalNoticeTemplate(fieldsParsed.data);
+      templateResult = generateLegalNoticeTemplate(fp.data);
     }
-  } catch (err) {
-    return NextResponse.json(
-      { error: "Failed to generate template. Please check your inputs." },
-      { status: 400 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Failed to generate template. Please check your inputs." }, { status: 400 });
   }
 
-  // If English, return the deterministic template directly (no LLM needed)
+  // English: fully deterministic, no LLM call needed
   if (language === "en") {
-    return NextResponse.json({
-      title: templateResult.title,
-      body: templateResult.body,
-    });
+    return NextResponse.json({ title: templateResult.title, body: templateResult.body });
   }
 
-  // For Hindi/Marathi, use LLM to translate/polish
+  // Non-English: cache by templateId + fields hash + language to avoid repeat LLM calls
+  const cacheKey = `draft:${templateId}:${language}:${JSON.stringify(fields)}`.slice(0, 256);
+  const cached = draftCache.get(cacheKey);
+  if (cached) {
+    try {
+      const cachedResult = JSON.parse(cached) as { title: string; body: string };
+      return NextResponse.json({ ...cachedResult, cached: true });
+    } catch { /* fall through */ }
+  }
+
   try {
-    const provider = getLLMProvider();
+    const provider = getLLMProvider(); // singleton
     const langName = LANGUAGE_NAMES[language] ?? "English";
     const userMessage = buildDraftPrompt(templateResult.body, langName);
 
     const polished = await provider.chat({
       systemPrompt: DRAFT_SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }],
+      signal: req.signal,
     });
 
-    return NextResponse.json({
-      title: templateResult.title,
-      body: polished,
-    });
-  } catch (err) {
-    // Fall back to English template if LLM fails
+    const result = { title: templateResult.title, body: polished };
+    draftCache.set(cacheKey, JSON.stringify(result));
+    return NextResponse.json(result);
+  } catch {
+    // Graceful fallback to English when translation fails
     return NextResponse.json({
       title: templateResult.title,
       body: templateResult.body,
